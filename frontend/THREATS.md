@@ -1,0 +1,9 @@
+# TrustVault — Threat Model & Security Mitigations
+
+| Threat ID | Attack Vector | Impact | Mitigation Implemented | Residual Risk / Limitation |
+| :--- | :--- | :--- | :--- | :--- |
+| **TV-01** | **BOLA / IDOR Document Enumeration** | Unauthorized data access | Server-side authorization check (`canReadDocument`). Inaccessible documents return `404 Not Found` to prevent attackers from confirming file existence. | Timing side-channels could theoretically infer file existence; constant-time response padding can be introduced. |
+| **TV-02** | **Administrator Privilege Abuse** | Insider threat data breach | Strict role isolation: `ADMINISTRATOR` has NO automatic access to file contents without an explicit grant. | Direct root access to raw database files can bypass application controls unless encryption at rest with user keys is deployed. |
+| **TV-03** | **Revocation Delay (Stale Caches)** | Revoked user downloads file | Database grants are evaluated synchronously on every request. No long-lived URLs. | Bytes already downloaded or captured prior to revocation cannot be recalled. |
+| **TV-04** | **Audit Trail Tampering** | Loss of non-repudiation | SHA-256 hash chaining: $Hash_N = SHA256(Hash_{N-1} + Event_N)$. `verifyChain` detects modifications, deletions, or reordering. | If a rogue DB admin rewrites the entire table from genesis, an external WORM or remote syslog backup is required. |
+| **TV-05** | **CSRF & Session Hijacking** | Unauthorized state change | HTTP-only cookies with SameSite policy and server-side session invalidation on logout. | Physical access to an unlocked, active browser session. |
