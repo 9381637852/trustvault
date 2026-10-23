@@ -5,7 +5,7 @@ import {
   Upload, Download, Share2, ShieldCheck, AlertCircle, Trash2 
 } from 'lucide-react';
 
-axios.defaults.baseURL = 'http://localhost:4000';
+axios.defaults.baseURL = 'https://trustvault-n402.onrender.com';
 axios.defaults.withCredentials = true;
 
 interface User {
